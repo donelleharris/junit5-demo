@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CupTest {
@@ -58,5 +60,38 @@ class CupTest {
         //external code
         //...
         fail();
+    }
+
+    @Test
+    void testObjectCreation(){
+        Cup c = new Cup("Water", 75.5);
+        assertEquals("Water", c.getLiquidType());
+        assertEquals(75.5, c.getPercentFull(), 0.001);
+    }
+    // similar to above but runs all asserts and returns results of
+    // each instead of stopping function after first fail.
+    @Test
+    void testObjectCreationWithAssertAll(){
+        Cup c = new Cup("Water", 75.5);
+        assertAll("Correctly builds object",
+                () -> assertEquals("Water", c.getLiquidType()),
+                () -> assertEquals(75.5, c.getPercentFull(), 0.001)
+        );
+    }
+
+    public double guessThePercent(Cup c){
+        while(true){
+            double guess = (Math.random() * (100 - 0) + 0);
+            if(Math.abs(guess - c.getPercentFull()) < 1){
+                return guess;
+            }
+        }
+    }
+
+    @Test
+    void guessThePercent(){
+        Cup c = new Cup("Water", 50);
+        assertTimeoutPreemptively(Duration.ofSeconds(5),
+                () -> guessThePercent(c) > 0);
     }
 }
